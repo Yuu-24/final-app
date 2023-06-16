@@ -1,0 +1,62 @@
+@import 'bootstrap/dist/css/bootstrap';
+
+#home {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 17.5rem;
+}
+
+#home::before {
+    content: "";
+    position: absolute;
+    background: url("bg2.jpg") no-repeat center center/cover;
+    background-attachment: fixed;
+    z-index: -1;
+    opacity: 0.89;
+    height: 61%;
+    width: 100%;
+}
+
+
+.services {
+    display: flex;
+}
+.services .box {
+    border: 2px solid brown;
+    border-radius: 10px;
+    display: block;
+    padding: 12px;
+    margin: 12px;
+}
+
+.h-secondary {
+    padding: 12px;
+    color: black;
+    font-size: 2.3rem;
+    font-family: 'Baloo 2', cursive;
+    margin: auto;
+}
+
+.services .box img {
+    display: block;
+    margin: auto;
+    height: 200px;
+}
+
+.center {
+    text-align: center;
+}
+
+#services-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 26rem;
+}
+
+.bg-dark {
+    background-color: #0c0f14 !important;
+}

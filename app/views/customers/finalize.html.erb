@@ -1,0 +1,31 @@
+<div class="container my-4">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Cost</th>
+        <th scope="col">Placed on</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%cnt=1%>
+      <%total_cost=0%>
+      <%@customer.orders.where(status: 1).each do |order|%>
+        <%item = order.item%>
+        <tr>
+          <th scope="row"><%=cnt%></th>
+          <td><%= item.name%></td>
+          <td><%= order.quantity%></td>
+          <td><%= order.price%></td>
+          <td><%= order.created_at%></td>
+          <%total_cost += order.price.to_i%>
+        </tr>
+        <%cnt+=1%>
+      <%end%>
+    </tbody>
+  </table>
+  <p>Total cost of your order is: (&#8377) <%=total_cost%></p>
+  <%= link_to 'Finalize', purchase_customer_path(current_user) ,class: 'btn btn-sm btn-success'%>
+</div>

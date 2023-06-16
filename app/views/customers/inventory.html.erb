@@ -1,0 +1,142 @@
+<div class="container my-4">
+  <div class="row">
+    <div class="col-md-2 m-auto">
+      <%# <button class="btn btn-primary btn-sm" id="scan">Scan</button> %>
+      <img src="<%= asset_url('qr1.gif') %>" alt="Image" id="scan" class="img-fluid">
+
+    </div>
+    <div class="col-md-10">
+      <h2 class="text-center my-4">Available Items</h2>
+      <table class="table" id="myTable" style="width: 100%">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Cost</th>
+            <th scope="col">action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%cnt=1%>
+          <% @items.each do |item|%>
+            <tr>
+              <th scope="row"><%=cnt%>.</th>
+              <!--<td><%= link_to item.name, item_path(item), class: 'link-dark'%></td>-->
+              <td><%= item.name%></td>
+              <td><%= item.price%></td>
+              <td><button type="button" class="btn btn-warning btn-sm mx-2 edit-button" data-toggle="modal" data-target="#exampleModal" data-item-id=<%= item.id%> data-item-name="<%= item.name %>" data-item-price="<%= item.price %>">
+                  Add
+                </button>
+              </td>
+            </tr>
+            <%cnt+=1%>
+          <%end%>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Cart Panel</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <%= form_with( id: "add_form") do |f| %>
+          <%= f.hidden_field :customer_id, value: current_user.id %>
+          <div class="form-group">
+            <%= f.label :name %>
+            <%= f.text_field :name, class: 'form-control', id: "item_name_input1", readonly: true %>
+          </div>
+          <div class="form-group">
+            <%= f.label :quantity %>
+            <%= f.number_field :quantity, class: 'form-control', id: "item_quantity_input1" %>
+          </div>
+          <div class="form-group">
+            <%= f.label :price %>
+            <%= f.number_field :price, class: 'form-control', id: "item_price_input1", readonly: true %>
+          </div>
+          <%= f.submit "Add Item", class: 'btn btn-primary' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="scanModal" tabindex="-1" aria-labelledby="scanModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark ">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5 text-light" id="jModalLabel">Scan Item</h1>
+        <button id="bt-close" type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modal-id">
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script>
+  $(document).ready(function() {
+        var table = $('#myTable').DataTable({
+            // dom: '<"ButtonStuff"B><"FilterStuff"f>t'
+        });
+        window.table = table;
+
+    });
+</script>
+<script>
+  $(document).ready(function() {
+    $('.edit-button').on('click', function() {
+      var itemName = $(this).data('item-name');
+      var itemQuantity = "";
+      var itemPrice = $(this).data('item-price');
+      var itemId = $(this).data('item-id');
+
+      $('#item_name_input1').val(itemName);
+      $('#item_quantity_input1').val(itemQuantity);
+      $('#item_price_input1').val(itemPrice);
+      var form = $('#add_form');
+
+    // Set the form action URL dynamically based on the item ID
+      form.attr('action', '/items/' + itemId + '/add');
+    });
+  });
+</script>
+<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+<script>
+  $('#scan').click(async () => {
+          $('#scanModal').modal('toggle');
+          let div = document.getElementById('modal-id');
+          var content = `<video id='preview' style='width:100%'><\/video><script type="text/javascript">
+    let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+    scanner.addListener('scan', function (content) {
+      console.log(content);
+      window.table.search(content).draw();
+      scanner.stop();
+      $('#bt-close').click();
+    });
+    Instascan.Camera.getCameras().then(function (cameras) {
+      if (cameras.length > 0) {
+        scanner.start(cameras[0]);
+      } else {
+        console.error('No cameras found.');
+      }
+    }).catch(function (e) {
+      console.error(e);
+    });
+  <\/script>`;
+          div.innerHTML = content;
+          var scripts = div.getElementsByTagName("script");
+          for (var i = 0; i < scripts.length; i++) {
+              eval(scripts[i].innerText);
+          }
+
+      });
+</script>

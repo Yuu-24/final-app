@@ -1,0 +1,29 @@
+<div class="container">
+  <h2 class="text-center my-3">Roster</h2>
+  <table class="table my-4">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Username</th>
+        <th scope="col">Email</th>
+        <th scope="col">Status</th>
+        <th scope="col">Phone_No</th>
+      </tr>
+    </thead>
+    <tbody>
+        <%cnt=1%>
+      <% @staffs.each do |staff|%>
+        <tr>
+          <th scope="row"><%=cnt%>.</th>
+          <td><%= link_to staff.name, staff_path(staff), class: 'link-dark'%></td>
+          <td><%= staff.username%></td>
+          <td><%= staff.email%></td>
+          <td><%= staff.active%></td>
+          <td><%= staff.phone_no%></td>
+        </tr>
+        <%cnt+=1%>
+      <%end%>
+    </tbody>
+  </table>
+</div>

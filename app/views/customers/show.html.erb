@@ -1,0 +1,39 @@
+<div class="container d-flex flex-column align-items-center my-4">
+  <%= link_to gravatar_for(@customer), @customer, class: 'my-4'%>
+  <div class="d-flex justify-content-center my-2">
+    <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#exampleModal">
+      Edit
+    </button>
+    <%= link_to 'Delete', customer_path(@customer), method: :delete, data: {confirm: "U sure about deleting ur account?"}, class: 'btn btn-sm btn-danger'%>
+  </div>
+  <table class="table">
+    <tbody>
+      <% fields_to_display = [:name, :username, :email, :phone_no, :created_at] %>
+      <% @customer.attributes.each do |attr, value| %>
+        <% if fields_to_display.include?(attr.to_sym) %>
+          <tr>
+            <td><strong><%= attr.humanize %>:</strong></td>
+            <td><%= value %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<!-- Button trigger modal -->
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Panel</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <%= render 'form'%>
+      </div>
+    </div>
+  </div>
+</div>

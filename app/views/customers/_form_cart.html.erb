@@ -1,0 +1,21 @@
+<div class="container my-4">
+  <%= render 'shared/errors', obj: @item %>
+  <%= form_with(model: @item, url: add_item_path(@item), method: :post) do |f| %>
+    
+    <%= f.hidden_field :item_id, value: @item.id %>
+    <%= f.hidden_field :customer_id, value: current_user.id %>
+    <div class="form-group mb-1">
+      <%= f.label :item_name %>
+      <%= f.text_field :name, class: 'form-control' %>
+    </div>
+    <div class="form-group mb-1">
+      <%= f.label :quantity %>
+      <%= f.number_field :quantity, class: 'form-control', value: '' %>
+    </div>
+    <div class="form-group mb-1">
+      <%= f.label :cost %>(&#8377)
+      <%= f.number_field :price, class: 'form-control', step: '0.01' %>
+    </div>
+    <%= f.submit "Add Item", class: 'btn btn-success btn-sm' %>
+  <% end %>
+</div>
