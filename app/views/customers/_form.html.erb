@@ -1,31 +1,28 @@
-<div class="container my-4">
-  <%= render 'shared/errors', obj:@customer%>
-  <%= form_with(model: @customer, local: true, html: { class: 'd-flex flex-column align-items-center' }) do |f| %>
-    <div class="form-group mb-3 col-md-6">
-      <%= f.label :name %>
-      <%= f.text_field :name, class: 'form-control'%>
-    </div>
-    <div class="form-group mb-3 col-md-6">
-      <%= f.label :username %>
-      <%= f.text_field :username, class: 'form-control'%>
-    </div>
-    <div class="form-group mb-3 col-md-6">
-      <%= f.label :email %>
-      <%= f.email_field :email, class: 'form-control'%>
-    </div>
-    <% if @customer.new_record?%>
-      <div class="form-group mb-3 col-md-6">
-        <%= f.label :password %>
-        <%= f.password_field :password, class: 'form-control'%>
+<div id="form-sec" class="text-light">
+  <div class="container my-4">
+    <h2 class="text-center my-4">Sign Up</h2>
+    <%= form_with(model: @customer, local: true, html: { class: 'd-flex flex-column align-items-center' }) do |f| %>
+      <div class="form-group mb-3 col-md-4">
+        <%= f.text_field :name, class: 'form-control', placeholder: 'Name'%>
       </div>
+      <div class="form-group mb-3 col-md-4">
+        <%= f.text_field :username, class: 'form-control', placeholder: 'Username'%>
+      </div>
+      <div class="form-group mb-3 col-md-4">
+        <%= f.email_field :email, class: 'form-control', placeholder: 'Email'%>
+      </div>
+      <% if @customer.new_record?%>
+        <div class="form-group mb-3 col-md-4">
+          <%= f.password_field :password, class: 'form-control', placeholder: 'Password'%>
+        </div>
+      <%end%>
+      <div class="form-group mb-3 col-md-4">
+        <%= f.text_field :phone_no, class: 'form-control', placeholder: 'Phone No.'%>
+      </div>
+      <%= f.submit @customer.new_record? ? "Sign Up" : "Update", class: 'btn btn-primary'%>
+      <% if !@customer.new_record? && @customer.errors.full_messages.length > 0%>
+        <% flash.now[:alert] = "error occured"%>
+      <%end%>
     <%end%>
-    <div class="form-group mb-3 col-md-6">
-      <%= f.label :phone_no %>
-      <%= f.text_field :phone_no, class: 'form-control'%>
-    </div>
-    <%= f.submit @customer.new_record? ? "Sign Up" : "Update", class: 'btn btn-primary'%>
-    <% if !@customer.new_record? && @customer.errors.full_messages.length > 0%>
-      <% flash.now[:alert] = "error occured"%>
-    <%end%>
-  <%end%>
+  </div>
 </div>

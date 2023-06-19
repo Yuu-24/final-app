@@ -4,15 +4,17 @@
     <title>FinalApp</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
   </head>
-
   <body>
     <%= render 'layouts/navbar' %>
     <%= render 'layouts/messages'%>
     <%= yield %>
     <%= render 'layouts/footer'%>
+    
   </body>
 </html>

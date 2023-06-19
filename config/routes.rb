@@ -8,11 +8,12 @@ Rails.application.routes.draw do
   get 'bye', to: 'sessions#bye'
   post 'login', to: 'sessions#create'
   delete 'logout', to: 'sessions#destroy'
-  resources :items, only: [:create, :destroy] do
+  resources :items, only: [:new, :create, :destroy] do
     member do
       get 'download'
       post 'add'
       patch 'update'
+      patch 'revive'
     end
   end
   resources :customers, only: [:create, :update, :show, :destroy] do
@@ -21,7 +22,6 @@ Rails.application.routes.draw do
       get 'history'
       get 'inventory'
       get 'purchase'
-      get 'finalize'
     end
   end
 

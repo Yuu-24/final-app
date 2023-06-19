@@ -1,6 +1,9 @@
 require 'securerandom'
 class SessionsController < ApplicationController
     def new
+        if logged_in?
+            redirect_to root_path
+        end
     end
 
     def create
@@ -38,10 +41,13 @@ class SessionsController < ApplicationController
     end
 
     def destroy
+        # byebug
         session[:user_id] = nil
         session[:is_staff] = nil
         redirect_to bye_path
     end
     def bye
+        
+        redirect_to root_path
     end
 end

@@ -1,8 +1,13 @@
 require "rqrcode"
 class ItemsController < ApplicationController
 
-    before_action :require_user, only: [:create, :update, :destroy, :add, :download]
-    before_action :require_staff, only: [:create, :update, :destroy, :download]
+    before_action :require_user, only: [:new, :create, :update, :destroy, :add, :download, :revive]
+    before_action :require_staff, only: [:new, :create, :update, :destroy, :download, :revive]
+    before_action :require_customer, only: [:add]
+
+    def new
+        @item = Item.new
+    end
     
     def create
         @item = Item.new(item_params)
@@ -12,9 +17,11 @@ class ItemsController < ApplicationController
             
             redirect_to stock_staff_path(current_user)
         else
-            @item = Item.new
-            @items = Item.all
-            render 'view'
+            # @item = Item.new
+            error_messages = @item.errors.full_messages
+            formatted_messages = error_messages.join("\n")
+            flash[:alert] = formatted_messages
+            redirect_to new_item_path
         end
     end
 
@@ -22,40 +29,55 @@ class ItemsController < ApplicationController
         @item = Item.find(params[:id])
         # byebug
 
-        if @item.update(params.permit(:name, :price, :quantity))
+        if @item.update(params.permit(:price, :quantity))
             flash[:notice]="Success"
         else
-            @item = Item.new
-            @items = Item.all
+            error_messages = @item.errors.full_messages
+            formatted_messages = error_messages.join("\n")
+            flash[:alert] = formatted_messages
         end
         redirect_to stock_staff_path(current_user)
     end
 
     def destroy
         item = Item.find(params[:id])
-        item.destroy
+        item.status = false 
+        item.orders.where(status:2).each do |order|
+            order.status = 4
+            item.quantity += order.quantity 
+            order.save 
+        end
+        item.save
 
+        flash[:alert] = "#{item.name} will no longer be shown in catalogue !!"
         redirect_to stock_staff_path(current_user)
     end
     
+    def revive 
+        item = Item.find(params[:id])
+        item.status = true 
+        item.save
+        flash[:notice] = "#{item.name} is added back to stock !!"
+        redirect_to stock_staff_path(current_user)
+    end
+
     def download
         item = Item.find(params[:id])
         qrcode = RQRCode::QRCode.new(item.name)
         png = qrcode.as_png(
           size: 300,
           border_modules: 4,
-          module_px_size: 6,
-          file: nil
+          module_px_size: 6
         )
       
         # Set the response headers to specify the file type and force download
-        headers["Content-Type"] = "image/png"
-        headers["Content-Disposition"] = "attachment; filename=\"qr_code_#{item.name.parameterize}.png\""
-      
-        send_data png.to_s, disposition: :attachment
-        # return redirect_to stock_staff_url(current_user)
+        send_data png.to_s,
+                  type: 'image/png',
+                  filename: "qr_code_#{item.name.parameterize}.png",
+                  disposition: 'attachment'
       end
       
+
 
     def add
         # byebug
@@ -97,7 +119,15 @@ class ItemsController < ApplicationController
     def require_staff
         # byebug
         if !current_user.respond_to?(:is_admin)
-            flash[:alert] = "You can't do that"
+            flash[:alert] = "You can't do that 111"
+            redirect_to root_path
+        end 
+    end
+
+    def require_customer
+        # byebug
+        if current_user.respond_to?(:is_admin)
+            flash[:alert] = "You can't do that 555"
             redirect_to root_path
         end 
     end

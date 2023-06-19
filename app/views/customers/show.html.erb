@@ -1,24 +1,30 @@
-<div class="container d-flex flex-column align-items-center my-4">
-  <%= link_to gravatar_for(@customer), @customer, class: 'my-4'%>
-  <div class="d-flex justify-content-center my-2">
-    <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#exampleModal">
-      Edit
-    </button>
-    <%= link_to 'Delete', customer_path(@customer), method: :delete, data: {confirm: "U sure about deleting ur account?"}, class: 'btn btn-sm btn-danger'%>
-  </div>
-  <table class="table">
-    <tbody>
-      <% fields_to_display = [:name, :username, :email, :phone_no, :created_at] %>
-      <% @customer.attributes.each do |attr, value| %>
-        <% if fields_to_display.include?(attr.to_sym) %>
-          <tr>
-            <td><strong><%= attr.humanize %>:</strong></td>
-            <td><%= value %></td>
-          </tr>
+<div id="show">
+  <div class="container d-flex flex-column align-items-center">
+    <div class="d-flex align-items-center flex-column my-2">
+      <%= link_to gravatar_for(@customer), @customer, class: 'm-auto' %>
+      <%if current_user == @customer%>
+      <div class="d-flex mt-2">
+        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#exampleModal">
+          Edit
+        </button>
+        <%= link_to 'Delete', customer_path(@customer), method: :delete, data: { confirm: "Are you sure about deleting your account?" }, class: 'btn btn-sm btn-danger ml-2' %>
+      </div>
+      <%end%>
+    </div>
+    <table class="table">
+      <tbody>
+        <% fields_to_display = [:name, :username, :email, :phone_no, :created_at] %>
+        <% @customer.attributes.each do |attr, value| %>
+          <% if fields_to_display.include?(attr.to_sym) %>
+            <tr>
+              <td><strong><%= attr.humanize %>:</strong></td>
+              <td><%= value %></td>
+            </tr>
+          <% end %>
         <% end %>
-      <% end %>
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 </div>
 <!-- Button trigger modal -->
 <!-- Modal -->
@@ -32,7 +38,28 @@
         </button>
       </div>
       <div class="modal-body">
-        <%= render 'form'%>
+        <div class="container">
+          <h2 class="text-center">Profile</h2>
+          <%= form_with(model: @customer, local: true, html: { class: 'd-flex flex-column align-items-center' }) do |f| %>
+            <div class="form-group mb-2 col-md-6">
+              <%= f.text_field :name, class: 'form-control', placeholder: 'Name'%>
+            </div>
+            
+            <div class="form-group mb-2 col-md-6">
+              <%= f.email_field :email, class: 'form-control', placeholder: 'Email'%>
+            </div>
+            <% if @customer.new_record?%>
+              <div class="form-group mb-2 col-md-6">
+                <%= f.password_field :password, class: 'form-control', placeholder: 'Password'%>
+              </div>
+            <%end%>
+            <div class="form-group mb-2 col-md-6">
+              <%= f.text_field :phone_no, class: 'form-control', placeholder: 'Phone No.'%>
+            </div>
+            <%= f.submit "Update", class: 'btn btn-primary'%>
+            
+          <%end%>
+        </div>
       </div>
     </div>
   </div>

@@ -1,59 +1,67 @@
 <div class="container">
-  <h2 class="text-center my-4">Past Orders</h2>
-  <div class="accordion" id="accordionExample">
-    <% @customer.orders.where.not(status: 1)
-       .group_by { |order| order.token }
-       .sort_by { |token, orders| orders.max_by(&:created_at).created_at }
-       .reverse_each do |token, orders| %>
-      <div class="card">
-        <div class="card-header" id="heading<%= token %>">
-          <h2 class="mb-0">
-            <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse<%= token %>" aria-expanded="true" aria-controls="collapse<%= token %>">
-              <div class="d-flex justify-content-between">
-                <div>Order_Id: <%= token%></div>
-                <div>Purchased at: <%= time_ago_in_words(orders.first.updated_at) %> ago</div>
-                <div>Cost: <%= orders.pluck(:price).sum %></div>
-              </div>
-            </button>
-          </h2>
-        </div>
-        <div id="collapse<%= token %>" class="collapse" aria-labelledby="heading<%= token %>" data-parent="#accordionExample">
-          <div class="card-body container">
-            <table class="table container">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% cnt = 1 %>
-                <% orders.each do |order| %>
-                  <% if order.status != 1 %>
-                    <tr>
-                      <th scope="row"><%= cnt %></th>
-                      <td><%= order.item.name %></td>
-                      <td><%= order.quantity %></td>
-                      <td>(&#8377)<%= order.price %></td>
-                      <%if order.status == 2%>
-                        <td><span class="badge badge-primary">Placed</span></td>
-                      <%elsif order.status == 3%>
-                        <td><span class="badge badge-success">Fulfilled</span></td>
-                      <%else%>
-                        <td><span class="badge badge-danger">Failed</span></td>
-                      <%end%>
-                    </tr>
-                    <% cnt += 1 %>
+  <% if @customer.orders.where.not(status: 1).empty? %>
+    <div class="d-flex justify-content-center align-items-center vh-100">
+      <div class="text-center">
+        <img src="<%= asset_url('history.gif') %>" alt="Past Orders" class="img-fluid">
+      </div>
+    </div>
+  <% else %>
+    <h2 class="text-center my-4">Past Orders</h2>
+    <div class="accordion" id="accordionExample">
+      <% @customer.orders.where.not(status: 1)
+         .group_by { |order| order.token }
+         .sort_by { |token, orders| orders.max_by(&:created_at).created_at }
+         .reverse_each do |token, orders| %>
+        <div class="card">
+          <div class="card-header bg-secondary mb-2" id="heading<%= token %>">
+            <h2 class="mb-0">
+              <button class="btn btn-link btn-block text-left text-white text-decoration-none" type="button" data-toggle="collapse" data-target="#collapse<%= token %>" aria-expanded="true" aria-controls="collapse<%= token %>">
+                <div class="d-flex justify-content-between">
+                  <div>Order ID: <%= token %></div>
+                  <div>Purchased at: <%= time_ago_in_words(orders.first.updated_at) %> ago</div>
+                  <div>Cost: &#8377; <%= orders.pluck(:price).sum %></div>
+                </div>
+              </button>
+            </h2>
+          </div>
+          <div id="collapse<%= token %>" class="collapse" aria-labelledby="heading<%= token %>" data-parent="#accordionExample">
+            <div class="card-body container">
+              <table class="table container">
+                <thead class="thead-dark"> 
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% cnt = 1 %>
+                  <% orders.each do |order| %>
+                    <% if order.status != 1 %>
+                      <tr>
+                        <th scope="row"><%= cnt %>.</th>
+                        <td><%= order.item.name %></td>
+                        <td><%= order.quantity %></td>
+                        <td>(&#8377)<%= order.price %></td>
+                        <% if order.status == 2 %>
+                          <td><span class="badge badge-primary">Placed</span></td>
+                        <% elsif order.status == 3 %>
+                          <td><span class="badge badge-success">Fulfilled</span></td>
+                        <% else %>
+                          <td><span class="badge badge-danger">Failed</span></td>
+                        <% end %>
+                      </tr>
+                      <% cnt += 1 %>
+                    <% end %>
                   <% end %>
-                <% end %>
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
-    <% end %>
-  </div>
+      <% end %>
+    </div>
+  <% end %>
 </div>

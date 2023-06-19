@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_15_092523) do
+ActiveRecord::Schema.define(version: 2023_06_18_112744) do
 
   create_table "customers", force: :cascade do |t|
     t.string "name"
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 2023_06_15_092523) do
     t.integer "downvotes"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "status", default: true
   end
 
   create_table "orders", force: :cascade do |t|

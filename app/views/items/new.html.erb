@@ -1,0 +1,19 @@
+<div class="container my-4">
+    <h2 class="text-center">New Item</h2>
+  <%= render 'shared/errors', obj: @item %>
+  <%= form_with(model: @item, local: true, html: { class: '' }) do |f| %>
+    <div class="form-group mb-1">
+      <%= f.label :item_name %>
+      <%= f.text_field :name, class: 'form-control' %>
+    </div>
+    <div class="form-group mb-1">
+      <%= f.label :quantity %>
+      <%= f.number_field :quantity, class: 'form-control' %>
+    </div>
+    <div class="form-group mb-1">
+      <%= f.label :cost_per_unit %>(&#8377)
+      <%= f.number_field :price, class: 'form-control', step: '0.01' %>
+    </div>
+    <%= f.submit "Add Item", class: 'btn btn-primary btn-sm' %>
+  <% end %>
+</div>

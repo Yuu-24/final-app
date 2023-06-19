@@ -34,7 +34,7 @@ class OrdersController < ApplicationController
     end
 
     def fulfill
-        byebug
+        # byebug
         order=Order.find(params[:id])
         order.status = 3
         order.save
@@ -59,7 +59,7 @@ class OrdersController < ApplicationController
     def require_staff
         # byebug
         if !current_user.respond_to?(:is_admin)
-            flash[:alert] = "You can't do that"
+            flash[:alert] = "You can't do that 222"
             redirect_to root_path
         end 
     end

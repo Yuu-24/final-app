@@ -3,7 +3,7 @@ class Customer < ApplicationRecord
     before_save { self.email = email.downcase}
     before_save { self.username = username.downcase}
 
-    has_many :orders
+    has_many :orders ,dependent: :destroy
     has_many :items , :through => :orders 
 
     validates :username, 

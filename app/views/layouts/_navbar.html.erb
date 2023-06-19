@@ -1,55 +1,72 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark pr-0 sticky-top">
-  <%= link_to 'iStore', root_path, class: 'navbar-brand'%>
+  <%= link_to 'iStore', root_path, class: 'navbar-brand' %>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <% if !logged_in?%>
+      <% if !logged_in? %>
         <li class="nav-item active">
-          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          <%= link_to 'Home', root_path, class: 'nav-link' %>
+        </li>
+      <% elsif session[:is_staff] == 1 %>
+        <li class="nav-item">
+          <%= link_to 'Staff', staffs_path, class: 'nav-link' %>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">About</a>
+          <%= link_to 'Orders', orders_staff_path(current_user), class: 'nav-link' %>
         </li>
-      <%elsif session[:is_staff] == 1%>
-        <li class="nav-item active">
-          <%= link_to 'Me', staff_path(current_user), class: 'nav-link', aria: { current: true } %>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Stock
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <%= link_to 'New Item', new_item_path, class: 'dropdown-item' %>
+            <%= link_to 'View', stock_staff_path(current_user), class: 'dropdown-item' %>
+          </div>
         </li>
-        <li class="nav-item active">
-          <%= link_to 'Staff', staffs_path, class: 'nav-link', aria: { current: true } %>
+      <% else %>
+        <li class="nav-item">
+          <%= link_to 'Cart', cart_customer_path(current_user), class: 'nav-link' %>
         </li>
-        <li class="nav-item active">
-          <%= link_to 'Orders', orders_staff_path(current_user), class: 'nav-link', aria: { current: true } %>
+        <li class="nav-item">
+          <%= link_to 'Past Orders', history_customer_path(current_user), class: 'nav-link' %>
         </li>
-        <li class="nav-item active">
-          <%= link_to 'Stock', stock_staff_path(current_user), class: 'nav-link', aria: { current: true } %>
+        <li class="nav-item">
+          <%= link_to 'Inventory', inventory_customer_path(current_user), class: 'nav-link' %>
         </li>
-      <%else%>
-        <li class="nav-item active">
-          <%= link_to 'Me', customer_path(current_user), class: 'nav-link', aria: { current: true } %>
-        </li>
-        <li class="nav-item active">
-          <%= link_to 'Cart', cart_customer_path(current_user), class: 'nav-link', aria: { current: true } %>
-        </li>
-        <li class="nav-item active">
-          <%= link_to 'Past Orders', history_customer_path(current_user), class: 'nav-link', aria: { current: true } %>
-        </li>
-        <li class="nav-item active">
-          <%= link_to 'Inventory', inventory_customer_path(current_user), class: 'nav-link', aria: { current: true } %>
-        </li>
-      <%end%>
+      <% end %>
     </ul>
-    <div class="d-flex flex-row-reverse">
-      <% if request.path != signup_path && !logged_in?%>
-        <%= link_to 'SignUp', signup_path, class: 'nav-link btn btn-success btn-sm mx-2'%>
-      <%end%>
-      <% if request.path != login_path && !logged_in?%>
-        <%= link_to 'LogIn', login_path, class: 'nav-link btn btn-success btn-sm mx-2'%>
-      <%end%>
-      <% if logged_in?%>
-        <%= link_to 'LogOut', logout_path, method: :delete, class: 'nav-link btn btn-success btn-sm mx-2',style: 'font-size: 12px; padding: 5px 5px;'%>
-      <%end%>
+    <div class="navbar-nav ml-auto">
+      <% if request.path != signup_path && !logged_in? %>
+        <%= link_to 'SignUp', signup_path, class: 'nav-link btn btn-success btn-sm mx-2 text-light' %>
+      <% end %>
+      <% if request.path != login_path && !logged_in? %>
+        <%= link_to 'LogIn', login_path, class: 'nav-link btn btn-success btn-sm mx-2 text-light' %>
+      <% end %>
+      <% if logged_in? %>
+        <div class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+            <%= gravatar_for(current_user, size: 25, loc: 1) %>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right dropdown-menu-md">
+            <div class="container">
+              <div class="row">
+                <div class="col-12">
+                  <% if session[:is_staff] == 0 %>
+                    <%= link_to 'Profile', customer_path(current_user), class: 'dropdown-item' %>
+                  <% else %>
+                    <%= link_to 'Profile', staff_path(current_user), class: 'dropdown-item' %>
+                  <% end %>
+                </div>
+                <div class="col-12">
+                  <%= link_to 'Logout', logout_path, method: :delete, class: 'dropdown-item' %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
     </div>
   </div>
 </nav>
